@@ -1,0 +1,57 @@
+﻿<Window
+    x:Class="FilmPicker.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FilmPicker"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+    mc:Ignorable="d">
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="200" />
+            <ColumnDefinition Width="*" MinWidth="200" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*" MinHeight="100" />
+            <RowDefinition Height="15*" MinHeight="300" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <DataTemplate x:Key="NumberTemplate">
+                <NumberBox Value="{Binding Multiplier, Mode=TwoWay}" Minimum="1" Maximum="10" SpinButtonPlacementMode="Inline" />
+            </DataTemplate>
+            <DataTemplate x:Key="DeleteButton">
+                <Button Command="{Binding ElementName=filmsGrid,Path=DeleteFilmCommand}" CommandParameter="{Binding Id}">
+                    <SymbolIcon Symbol="Delete"/>
+                </Button>
+            </DataTemplate>
+        </Grid.Resources>
+        <Grid x:Name="winnerGrid" Grid.ColumnSpan="2" Grid.Row="0" Height="50" >
+        </Grid>
+        <Grid Grid.Row="1"
+              Grid.ColumnSpan="2"
+              Padding="20">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 10" HorizontalAlignment="Center">
+                    <Button x:Name="addFilmButton" Click="addButton_click">Add new film</Button>
+                    <Button Margin="10 0 0 0" Command="{x:Bind DeleteFilmCommand}" CommandParameter="{x:Bind Path=filmsGrid.SelectedItems}">Remove selected films</Button>
+                    <Button Margin="10 0 0 0" Command="{x:Bind SelectRandomCommand}">Select random</Button>
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <controls:DataGrid
+                        ItemsSource="{x:Bind Films, Mode=OneWay}"
+                        AutoGenerateColumns="False"
+                        x:Name="filmsGrid"
+                        Background="{ThemeResource SystemChromeMediumHighColor}">
+                        <controls:DataGrid.Columns>
+                            <controls:DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*" />
+                            <controls:DataGridTextColumn Header="Title" Binding="{Binding Title, Mode=TwoWay}" Width="3*" />
+                            <controls:DataGridTemplateColumn Header="Multiplier" CellTemplate="{StaticResource NumberTemplate}" Width="*"/>
+                        </controls:DataGrid.Columns>
+                    </controls:DataGrid>
+                </ScrollViewer>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
