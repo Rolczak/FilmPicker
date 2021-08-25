@@ -156,6 +156,7 @@ namespace FilmPicker
                 return;
             }
             SearchFilmList.Clear();
+            searchListLoadIndicator.IsActive = false;
             foreach (var item in result.Results)
             {
                 SearchFilmList.Add(new SearchFilmModel
@@ -163,12 +164,7 @@ namespace FilmPicker
                     Title = item.Title,
                     ImageUrl = item.Image
                 });
-            }
-            searchListLoadIndicator.IsActive = false;
-            foreach (var item in SearchFilmList)
-            {
-                await item.LoadImage();
-            }           
+            }      
         }
         
         //INotifyPropertyChanged

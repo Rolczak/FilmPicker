@@ -54,42 +54,58 @@
         </Grid>
 
         <Grid Grid.Row="1"
-              Grid.Column="1">
+              Grid.Column="1"
+              Padding="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
+                <RowDefinition Height="60" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0"
+                  Padding="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" PlaceholderText="Enter title" Text="{x:Bind SearchExpression, Mode=TwoWay}" MaxHeight="30"/>
+                <TextBox Grid.Column="0" PlaceholderText="Enter title" Text="{x:Bind SearchExpression, Mode=TwoWay}" MaxHeight="30" Margin="10 0 10 0"/>
                 <Button Grid.Column="1" Command="{x:Bind GetSearchList}">Search</Button>
             </Grid>
             <Grid Grid.Row="1">
                 <ProgressRing x:Name="searchListLoadIndicator" IsActive="False" Width="100" Height="100"/>
-
                 <ListView ItemsSource="{x:Bind SearchFilmList, Mode=OneWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse Width="100" Height="100">
+                            <Grid Height="60">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Grid.Column="0" Width="50" Height="50">
                                     <Ellipse.Fill>
                                         <ImageBrush>
                                             <ImageBrush.ImageSource>
-                                                <BitmapImage UriSource="{Binding ImageUrl}" DecodePixelType="Logical" DecodePixelWidth="100" />
+                                                <BitmapImage UriSource="{Binding ImageUrl}" DecodePixelType="Logical" DecodePixelWidth="50" />
                                             </ImageBrush.ImageSource>
                                         </ImageBrush>
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                <TextBlock Text="{Binding Title}" />
-                                <Button>
-                                    <SymbolIcon Symbol="Add" />
-                                </Button> 
-                            </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding Title}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" >
+                                    <Button Margin="20 0 0 0">
+                                        <SymbolIcon Symbol="Help" />
+                                    </Button>
+                                    <Button Margin="20 0 0 0">
+                                        <SymbolIcon Symbol="Add" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
             </Grid>
         </Grid>

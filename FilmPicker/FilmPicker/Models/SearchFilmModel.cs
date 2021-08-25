@@ -28,27 +28,18 @@ namespace FilmPicker.Models
             }
         }
 
-        private BitmapImage _filmCover;
-        public BitmapImage FilmCover 
-        {
-            get => _filmCover;
-            set
-            {
-                if (value != FilmCover)
-                {
-                    _filmCover = value;
-                    NotifyPropertyChanged();
-                }
-            } 
-        
-        }
-        public string ImageUrl { get; set; }
+        private string _description;
 
-        public async Task LoadImage()
+        public string Description
         {
-            FilmCover = await ApiHelper.LoadImage(new Uri(ImageUrl));
-            FilmCover.DecodePixelType = DecodePixelType.Logical;
-            FilmCover.DecodePixelWidth = 200;
+            get =>_description; 
+            set 
+            {
+                _description = value; 
+                NotifyPropertyChanged();
+            }
         }
+
+        public string ImageUrl { get; set; }
     }
 }
