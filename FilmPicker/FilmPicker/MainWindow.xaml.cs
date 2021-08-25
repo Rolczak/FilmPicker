@@ -1,4 +1,6 @@
 ﻿using FilmPicker.Animations;
+using FilmPicker.Api;
+using FilmPicker.Api.Models;
 using FilmPicker.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -18,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
@@ -31,25 +34,49 @@ namespace FilmPicker
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
-        #region Fields
-        public ObservableCollection<FilmModel> Films { get; set; }
-
-        private int id = 0;
+        #region Config
         private readonly int minItems = 30;
         private readonly int maxItems = 60;
         private readonly int fromDurationMs = 50;
         private readonly int toDurationMs = 500;
         #endregion
+
+        #region Fields
+        public ObservableCollection<FilmModel> Films { get; set; }
+        public ObservableCollection<SearchFilmModel> SearchFilmList { get; set; }
+
+        private string _searchExpression;
+
+        public string SearchExpression
+        {
+            get => _searchExpression; 
+            set 
+            {
+                if (_searchExpression != value)
+                {
+                    NotifyPropertyChanged();
+                    _searchExpression = value;
+                }                            
+            }
+        }
+
+
+        private int id = 0;
+        #endregion
+
         #region Commands
         public ICommand DeleteFilmCommand { get; private set; }
         public ICommand SelectRandomCommand { get; private set; }
+        public ICommand GetSearchList { get; private set;  }
+        public ICommand RemoveToolTip { get; private set;  }
         #endregion
 
         public MainWindow()
         {
             Films = new();
+            SearchFilmList = new();
             this.InitializeComponent();
 
             DeleteFilmCommand = new DelegateCommand<object>(x =>
@@ -58,6 +85,8 @@ namespace FilmPicker
                 selectedList.ForEach(x => Films.Remove(x));
             });
             SelectRandomCommand = new DelegateCommand(() => PickRandomFilm());
+            GetSearchList = new DelegateCommand(() => GetFilmsForSearchList());
+            RemoveToolTip = new DelegateCommand<UIElement>(x => mainGrid.Children.Remove(x));
         }
 
         private void addButton_click(object sender, RoutedEventArgs e)
@@ -92,10 +121,64 @@ namespace FilmPicker
         private async void PickRandomFilm()
         {
             winnerGrid.Children.Clear();
-            
-            var randomTitleList = GetRandomList();
-            PickingAnimation pickingAnimation = new PickingAnimation(randomTitleList, fromDurationMs, toDurationMs);
+
+            PickingAnimation pickingAnimation = new PickingAnimation(GetRandomList(), fromDurationMs, toDurationMs);
             await pickingAnimation.Animate(winnerGrid);
+        }
+
+        private async void GetFilmsForSearchList()
+        {
+            searchListLoadIndicator.IsActive = true;
+            var result = await ApiHelper.GetListForSearch(SearchExpression);
+            if (result == null)
+            {
+                var toolTip = new TeachingTip
+                {
+                    Title = "Error",
+                    Subtitle = "Unexpected error when downloading data",
+                    CloseButtonCommand = RemoveToolTip
+                };
+                toolTip.CloseButtonCommandParameter = toolTip;
+                mainGrid.Children.Add(toolTip);
+                toolTip.IsOpen = true;
+
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
+            {
+                var toolTip = new TeachingTip
+                {
+                    Title = "Error",
+                    Subtitle = result.ErrorMessage
+                };
+                toolTip.IsOpen = true;
+                return;
+            }
+            SearchFilmList.Clear();
+            foreach (var item in result.Results)
+            {
+                SearchFilmList.Add(new SearchFilmModel
+                {
+                    Title = item.Title,
+                    ImageUrl = item.Image
+                });
+            }
+            searchListLoadIndicator.IsActive = false;
+            foreach (var item in SearchFilmList)
+            {
+                await item.LoadImage();
+            }           
+        }
+        
+        //INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

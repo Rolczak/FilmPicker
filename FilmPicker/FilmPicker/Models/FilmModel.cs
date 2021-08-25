@@ -24,10 +24,12 @@ namespace FilmPicker.Models
                     _title = value;
                     NotifyPropertyChanged();
                 }
-            } }
+            }
+        }
 
         private int _muliplier;
-        public int Multiplier {
+        public int Multiplier
+        {
             get
             {
                 return _muliplier;

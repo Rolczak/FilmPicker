@@ -8,7 +8,7 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
     mc:Ignorable="d">
-    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+    <Grid x:Name="mainGrid" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Padding="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="200" />
             <ColumnDefinition Width="*" MinWidth="200" />
@@ -30,8 +30,7 @@
         <Grid x:Name="winnerGrid" Grid.ColumnSpan="2" Grid.Row="0" Height="50" >
         </Grid>
         <Grid Grid.Row="1"
-              Grid.ColumnSpan="2"
-              Padding="20">
+              Grid.Column="0">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 10" HorizontalAlignment="Center">
                     <Button x:Name="addFilmButton" Click="addButton_click">Add new film</Button>
@@ -52,6 +51,47 @@
                     </controls:DataGrid>
                 </ScrollViewer>
             </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" PlaceholderText="Enter title" Text="{x:Bind SearchExpression, Mode=TwoWay}" MaxHeight="30"/>
+                <Button Grid.Column="1" Command="{x:Bind GetSearchList}">Search</Button>
+            </Grid>
+            <Grid Grid.Row="1">
+                <ProgressRing x:Name="searchListLoadIndicator" IsActive="False" Width="100" Height="100"/>
+
+                <ListView ItemsSource="{x:Bind SearchFilmList, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="100" Height="100">
+                                    <Ellipse.Fill>
+                                        <ImageBrush>
+                                            <ImageBrush.ImageSource>
+                                                <BitmapImage UriSource="{Binding ImageUrl}" DecodePixelType="Logical" DecodePixelWidth="100" />
+                                            </ImageBrush.ImageSource>
+                                        </ImageBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="{Binding Title}" />
+                                <Button>
+                                    <SymbolIcon Symbol="Add" />
+                                </Button> 
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

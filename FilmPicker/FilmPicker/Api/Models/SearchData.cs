@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace FilmPicker.Api.Models
 {
-        public class SearchData
-        {
-            public string SearchType { get; set; }
-            public string Expression { get; set; }
+    public class SearchData
+    {
+        public string SearchType { get; set; }
+        public string Expression { get; set; }
 
-            public List<SearchResult> Results { get; set; }
+        public List<SearchResult> Results { get; set; }
 
-            public string ErrorMessage { get; set; }
-        }
+        public string ErrorMessage { get; set; }
+    }
 }
