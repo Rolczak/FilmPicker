@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FilmPicker.Api.Models
 {
-    class SearchResult
+    public class SearchResult
     {
         public string Id { get; set; }
         public string ResultType { get; set; }
