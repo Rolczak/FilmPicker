@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+    xmlns:VM="using:FilmPicker.ViewModels"
+    xmlns:Model="using:FilmPicker.Models"
     mc:Ignorable="d"
     x:Name="mainWindow">
     <Grid x:Name="mainGrid" Padding="10">
@@ -20,34 +22,36 @@
         </Grid.RowDefinitions>
         <Grid.Resources>
             <DataTemplate x:Key="NumberTemplate">
-                <NumberBox Value="{Binding Multiplier, Mode=TwoWay}" Minimum="1" Maximum="10" SpinButtonPlacementMode="Inline" />
+                <NumberBox Value="{Binding Multiplier, Mode=TwoWay}" Minimum="1" Maximum="10" SpinButtonPlacementMode="Inline" Margin="1"/>
             </DataTemplate>
             <DataTemplate x:Key="DeleteButton">
-                <Button Command="{Binding ElementName=filmsGrid,Path=DeleteFilmCommand}" CommandParameter="{Binding Id}">
-                    <SymbolIcon Symbol="Delete"/>
+                <Button Click="DeleteButtonClick" Tag="{Binding Id}" HorizontalAlignment="Stretch" Background="DarkRed" CornerRadius="0" Margin="5 0 0 0">
+                    <SymbolIcon Symbol="Delete" />
                 </Button>
             </DataTemplate>
         </Grid.Resources>
-        <Grid x:Name="winnerGrid" Grid.ColumnSpan="2" Grid.Row="0" Height="50" >
+        <Grid x:Name="winnerGrid" Grid.ColumnSpan="2" Grid.Row="0">
+            <Button Click="PickRandomFilm_click" Background="{ThemeResource SystemAccentColorDark1}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="250">Select random</Button>
         </Grid>
         <Grid Grid.Row="1"
               Grid.Column="0">
             <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 10" HorizontalAlignment="Center">
-                    <Button x:Name="addFilmButton" Click="addButton_click">Add new film</Button>
-                    <Button Margin="10 0 0 0" Command="{x:Bind DeleteFilmCommand}" CommandParameter="{x:Bind Path=filmsGrid.SelectedItems}">Remove selected films</Button>
-                    <Button Margin="10 0 0 0" Command="{x:Bind SelectRandomCommand}">Select random</Button>
+
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 10" >
+                    <Button Command="{x:Bind ViewModel.AddCustomFilmToList}" Background="Green">
+                        <SymbolIcon Symbol="Add" />
+                    </Button>
                 </StackPanel>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <controls:DataGrid
-                        ItemsSource="{x:Bind Films, Mode=OneWay}"
+                        ItemsSource="{x:Bind ViewModel.Films, Mode=OneWay}"
                         AutoGenerateColumns="False"
                         x:Name="filmsGrid"
                         Background="{ThemeResource SystemChromeMediumHighColor}">
                         <controls:DataGrid.Columns>
-                            <controls:DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*" />
                             <controls:DataGridTextColumn Header="Title" Binding="{Binding Title, Mode=TwoWay}" Width="3*" />
-                            <controls:DataGridTemplateColumn Header="Multiplier" CellTemplate="{StaticResource NumberTemplate}" Width="*"/>
+                            <controls:DataGridTemplateColumn Header="Multiplier" CellTemplate="{StaticResource NumberTemplate}" Width="*" />
+                            <controls:DataGridTemplateColumn CellTemplate="{StaticResource DeleteButton}" />
                         </controls:DataGrid.Columns>
                     </controls:DataGrid>
                 </ScrollViewer>
@@ -67,14 +71,14 @@
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" PlaceholderText="Enter title" Text="{x:Bind SearchExpression, Mode=TwoWay}" MaxHeight="30" Margin="10 0 10 0"/>
-                <Button Grid.Column="1" Command="{x:Bind GetSearchList}">Search</Button>
+                <TextBox Grid.Column="0" PlaceholderText="Enter title" Text="{x:Bind ViewModel.SearchExpression, Mode=TwoWay}" MaxHeight="30" Margin="10 0 10 0"/>
+                <Button Grid.Column="1" Command="{x:Bind ViewModel.GetSearchList}">Search</Button>
             </Grid>
             <Grid Grid.Row="1">
-                <ProgressRing x:Name="searchListLoadIndicator" IsActive="False" Width="100" Height="100"/>
-                <ListView ItemsSource="{x:Bind SearchFilmList, Mode=OneWay}">
+                <ProgressRing IsActive="{x:Bind ViewModel.IsSearching, Mode=OneWay}" Width="100" Height="100"/>
+                <ListView ItemsSource="{x:Bind ViewModel.SearchFilmList, Mode=OneWay}">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="Model:SearchFilmModel">
                             <Grid Height="60">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100" />

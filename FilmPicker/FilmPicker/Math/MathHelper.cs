@@ -10,7 +10,7 @@ namespace FilmPicker.Math
     {
         public static int Lerp(int start, int end, float change)
         {
-            return (int)(start + change * (end - start));
+            return (int)(start + (change * (end - start)));
         }
     }
 }

@@ -9,14 +9,12 @@ namespace FilmPicker.Models
 {
     public class FilmModel : ModelBase
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
+
         private string _title;
         public string Title
         {
-            get
-            {
-                return _title;
-            }
+            get => _title;
             set
             {
                 if (value != Title)
@@ -30,10 +28,7 @@ namespace FilmPicker.Models
         private int _muliplier;
         public int Multiplier
         {
-            get
-            {
-                return _muliplier;
-            }
+            get => _muliplier;
             set
             {
                 if (value != Multiplier)
