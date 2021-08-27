@@ -1,4 +1,5 @@
 ﻿using FilmPicker.Api.Models;
+using FilmPicker.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -17,67 +18,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace FilmPicker.Controls
 {
-    public sealed partial class FilmDetailsContentDialog : ContentDialog, INotifyPropertyChanged
+    public sealed partial class FilmDetailsContentDialog : ContentDialog
     {
-        public FilmDetailsContentDialog(SearchResult film)
+        public FilmDetails Film { get; set; }
+        public FilmDetailsContentDialog(FilmDetails film)
         {
-            FilmTitle = film.Title;
-            Description = film.Description;
-            CoverImageUrl = film.Image;
+            Film = film;
             this.InitializeComponent();
-        }
-
-        private string _filmTitle;
-        public string FilmTitle
-        {
-            get =>_filmTitle;
-            set 
-            {
-                if(value != _filmTitle)
-                {
-                    _filmTitle = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        private string _description;
-        public string Description
-        {
-            get => _description;
-            set
-            {
-                if (value != _description)
-                {
-                    _description = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        private string _coverImageUrl;
-
-        public string CoverImageUrl
-        {
-            get => _coverImageUrl;
-            set
-            {
-                if (value != _coverImageUrl)
-                {
-                    _coverImageUrl = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }

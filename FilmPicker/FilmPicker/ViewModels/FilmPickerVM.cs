@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -26,7 +25,6 @@ namespace FilmPicker.ViewModels
         public ICommand DeleteFilmCommand { get; private set; }
         public ICommand SelectRandomCommand { get; private set; }
         public ICommand GetSearchList { get; private set; }
-        public ICommand GetFilmDetails { get; private set; }
         public ICommand AddCustomFilmToList { get; private set; }
         #endregion
 
@@ -80,11 +78,6 @@ namespace FilmPicker.ViewModels
 
             GetSearchList = new DelegateCommand(() => GetFilmsForSearchList());
 
-            GetFilmDetails = new DelegateCommand<object>(f =>
-                {
-                    Debug.WriteLine("works");
-                });
-
             AddCustomFilmToList = new DelegateCommand(() => Films
                 .Add(new FilmModel
                 {
@@ -113,6 +106,31 @@ namespace FilmPicker.ViewModels
                 randomTitleList.Add(randomFilmList[random.Next(0, randomFilmList.Count)].Title);
             }
             return randomTitleList.OrderBy(item => random.Next()).ToList();
+        }
+        
+        public async Task<FilmDetails> GetFilmDetails(string id)
+        {
+            var searchDetails = await ApiHelper.LoadFilmDetails(id);
+            if (searchDetails == null)
+            {
+                Debug.WriteLine("Error. Downloaded film details are null");
+                return null;
+            }
+
+            return new FilmDetails
+            {
+                Id = searchDetails.Id,
+                Title = searchDetails.Title,
+                FullTitle = searchDetails.FullTitle,
+                Genres = searchDetails.Genres,
+                Rating = (decimal) searchDetails.ImDbRating,
+                Plot = searchDetails.Plot,
+                Images = new ObservableCollection<FilmImage>(searchDetails.Images?.Items?.Select(item => new FilmImage
+                {
+                    Title = item.Title,
+                    Image = item.Image
+                }).ToList())
+            };
         }
         private async void GetFilmsForSearchList()
         {

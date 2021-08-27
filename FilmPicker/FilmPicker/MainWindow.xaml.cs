@@ -64,9 +64,10 @@ namespace FilmPicker
                 Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
                 return;
             }
-            var button = sender as Button;
-            //var item = SearchListApi.FirstOrDefault(f => f.Id == button.Tag);
 
+            var filmId = (string)(sender as Button).Tag;
+
+            var test = await ViewModel.GetFilmDetails(filmId);
             //if (item == null)
             //{
             //    Debug.WriteLine("Item for details not found");

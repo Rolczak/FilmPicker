@@ -1,5 +1,6 @@
 ﻿using FilmPicker.Api.Models;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 
@@ -20,7 +20,7 @@ namespace FilmPicker.Api
         private static string ApiKey = ConfigurationManager.AppSettings["imbdApiKey"];
         private static HttpClient httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
         private static string SearchMovieUrl = $"SearchMovie/{ApiKey}/";
-        private static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true};
+        private static string MovieDetailsUrl = $"Title/{ApiKey}/";
 
         public static async Task<SearchData> GetListForSearch(string expression)
         {
@@ -33,7 +33,7 @@ namespace FilmPicker.Api
                 }
 
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<SearchData>(jsonContent, jsonSerializerOptions);
+                return JsonConvert.DeserializeObject<SearchData>(jsonContent);
             }
             catch (Exception ex)
             {
@@ -49,11 +49,8 @@ namespace FilmPicker.Api
             {
                 var client = new HttpClient();
                 var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    return null;
-                }
                 var inputStream = await response.Content.ReadAsStreamAsync();
                 BitmapImage image = new();
                 await image.SetSourceAsync(inputStream.AsRandomAccessStream());
@@ -61,10 +58,31 @@ namespace FilmPicker.Api
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error when downloading data. Exception message: {ex.Message}");
+                Debug.WriteLine($"Unexpected error when downloading image. Exception message: {ex.Message}");
                 return null;
             }
         }
 
+        public static async Task<SearchDetails> LoadFilmDetails(string Id)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(Id))
+                {
+                    Debug.WriteLine("Error while downloading film details. Film id is null");
+                    return null;
+                }
+                var response = await httpClient.GetAsync($"{MovieDetailsUrl}{Id}/images,");
+                response.EnsureSuccessStatusCode();
+
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<SearchDetails>(jsonContent);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected error when downloading film details. Exception message: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

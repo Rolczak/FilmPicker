@@ -10,18 +10,7 @@
     Title="Film details">
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <Image Grid.Column="0" Source="{x:Bind CoverImageUrl}" Margin="10"/>
-
-        <StackPanel Grid.Column="1" Margin="10">
-            <TextBlock Text="{x:Bind FilmTitle}" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-            <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap"/>
-        </StackPanel>
-       
     </Grid>
 
 </ContentDialog>
