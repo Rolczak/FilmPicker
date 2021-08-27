@@ -11,6 +11,8 @@ namespace FilmPicker.Models
 {
     public class SearchFilmModel : ModelBase
     {
+        public string Id { get; set; }
+
         private string _title;
         public string Title
         {

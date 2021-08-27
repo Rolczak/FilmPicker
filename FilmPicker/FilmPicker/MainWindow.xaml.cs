@@ -1,6 +1,7 @@
 ﻿using FilmPicker.Animations;
 using FilmPicker.Api;
 using FilmPicker.Api.Models;
+using FilmPicker.Controls;
 using FilmPicker.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -64,13 +65,16 @@ namespace FilmPicker
 
 
         private int id = 0;
+        private List<SearchResult> SearchListApi;
         #endregion
 
         #region Commands
         public ICommand DeleteFilmCommand { get; private set; }
         public ICommand SelectRandomCommand { get; private set; }
-        public ICommand GetSearchList { get; private set;  }
-        public ICommand RemoveToolTip { get; private set;  }
+        public ICommand GetSearchList { get; private set; }
+        public ICommand RemoveToolTip { get; private set; }
+        public ICommand GetFilmDetails { get; private set; }
+
         #endregion
 
         public MainWindow()
@@ -86,7 +90,11 @@ namespace FilmPicker
             });
             SelectRandomCommand = new DelegateCommand(() => PickRandomFilm());
             GetSearchList = new DelegateCommand(() => GetFilmsForSearchList());
-            RemoveToolTip = new DelegateCommand<UIElement>(x => mainGrid.Children.Remove(x));
+            RemoveToolTip = new DelegateCommand<UIElement>(tt => mainGrid.Children.Remove(tt));
+            GetFilmDetails = new DelegateCommand<object>(f => 
+            {
+                Debug.WriteLine("works");
+            });
         }
 
         private void addButton_click(object sender, RoutedEventArgs e)
@@ -155,12 +163,15 @@ namespace FilmPicker
                 toolTip.IsOpen = true;
                 return;
             }
+
+            SearchListApi = result.Results;
             SearchFilmList.Clear();
             searchListLoadIndicator.IsActive = false;
             foreach (var item in result.Results)
             {
                 SearchFilmList.Add(new SearchFilmModel
                 {
+                    Id = item.Id,
                     Title = item.Title,
                     ImageUrl = item.Image
                 });
@@ -175,6 +186,31 @@ namespace FilmPicker
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private async void GetSearchItemDetails(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button)
+            {
+                Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
+                return;
+            }
+            var button = sender as Button;
+            var item = SearchListApi.FirstOrDefault(f => f.Id == button.Tag);
+
+            if (item == null)
+            {
+                Debug.WriteLine("Item for details not found");
+                return;
+            }
+
+            var contentDialog = new FilmDetailsContentDialog(item)
+            {
+                CloseButtonText = "Close"
+            };
+            contentDialog.XamlRoot = Content.XamlRoot;
+            await contentDialog.ShowAsync();
+
         }
     }
 }

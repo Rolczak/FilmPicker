@@ -1,0 +1,27 @@
+﻿<ContentDialog
+    x:Class="FilmPicker.Controls.FilmDetailsContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FilmPicker.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Name="dialog"
+    Title="Film details">
+    
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Image Grid.Column="0" Source="{x:Bind CoverImageUrl}" Margin="10"/>
+
+        <StackPanel Grid.Column="1" Margin="10">
+            <TextBlock Text="{x:Bind FilmTitle}" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+            <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap"/>
+        </StackPanel>
+       
+    </Grid>
+
+</ContentDialog>
