@@ -67,19 +67,19 @@ namespace FilmPicker
 
             var filmId = (string)(sender as Button).Tag;
 
-            var test = await ViewModel.GetFilmDetails(filmId);
-            //if (item == null)
-            //{
-            //    Debug.WriteLine("Item for details not found");
-            //    return;
-            //}
+            var item = await ViewModel.GetFilmDetails(filmId);
+            if (item == null)
+            {
+                Debug.WriteLine("Item for details not found");
+                return;
+            }
 
-            //var contentDialog = new FilmDetailsContentDialog(item)
-            //{
-            //    CloseButtonText = "Close"
-            //};
-            //contentDialog.XamlRoot = Content.XamlRoot;
-            //await contentDialog.ShowAsync();
+            var contentDialog = new FilmDetailsContentDialog(item)
+            {
+                CloseButtonText = "Close"
+            };
+            contentDialog.XamlRoot = Content.XamlRoot;
+            await contentDialog.ShowAsync();
 
         }
 

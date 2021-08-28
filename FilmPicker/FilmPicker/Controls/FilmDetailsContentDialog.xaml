@@ -5,12 +5,63 @@
     xmlns:local="using:FilmPicker.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:FilmPicker.Models"
     mc:Ignorable="d"
     x:Name="dialog"
-    Title="Film details">
+    Title="Film details" >
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <ScrollViewer x:Name="HorizontalScrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True" > 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Grid.Column="0" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="300" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True">
+                    <StackPanel>
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Title:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.FullTitle}" TextWrapping="Wrap" />
+                        <TextBlock Margin="0 10 0 0" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">imDb Rating:</TextBlock>
+                        <RatingControl HorizontalAlignment="Left" IsReadOnly="True" Value="{x:Bind Film.Rating}"/>
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Directors:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Directors}" TextWrapping="Wrap" />
+                        <TextBlock Margin="0 10 0 0" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Writers:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Writers}" TextWrapping="Wrap" />
+                        <TextBlock Margin="0 10 0 0" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Stars:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Stars}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer Grid.Column="1" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="400" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True">
+                    <StackPanel>
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Plot:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Plot}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>    
+        </ScrollViewer>
+
+        <FlipView ItemsSource="{x:Bind Film.Images}" Grid.Row="1">
+            <FlipView.ItemTemplate>
+                <DataTemplate x:DataType="model:FilmImage">
+                    <Grid>
+                        <Image Source="{x:Bind Image}" Stretch="Uniform" VerticalAlignment="Top" UseLayoutRounding="True"/>
+                        <Border Background="#AAFFFFFF" VerticalAlignment="Bottom">
+                            <ScrollViewer MaxHeight="100">
+                                <TextBlock Text="{x:Bind Title}" Style="{ThemeResource BaseTextBlockStyle}" 
+                                           Foreground="#FF000000" Padding="12,12" TextWrapping="Wrap" 
+                                           HorizontalAlignment="Center" TextAlignment="Center"/>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </FlipView.ItemTemplate>
+        </FlipView>
     </Grid>
 
 </ContentDialog>

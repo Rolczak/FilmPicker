@@ -18,7 +18,7 @@ namespace FilmPicker.Api
     {
         private const string BaseUrl = "https://imdb-api.com/en/API/";
         private static string ApiKey = ConfigurationManager.AppSettings["imbdApiKey"];
-        private static HttpClient httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
+        private static HttpClient httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl), Timeout = TimeSpan.FromSeconds(30) };
         private static string SearchMovieUrl = $"SearchMovie/{ApiKey}/";
         private static string MovieDetailsUrl = $"Title/{ApiKey}/";
 

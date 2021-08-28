@@ -14,6 +14,12 @@ namespace FilmPicker.Api.Models
         public string Plot { get; set; }
         public string Genres { get; set; }
         public float ImDbRating { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public float RuntimeMins { get; set; }
+        public string Awards { get; set; }
+        public string Directors { get; set; }
+        public string Writers { get; set; }
+        public string Stars { get; set; }
         public SearchImages Images { get; set; }
     }
 }

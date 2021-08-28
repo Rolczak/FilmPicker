@@ -12,5 +12,10 @@ namespace FilmPicker.Math
         {
             return (int)(start + (change * (end - start)));
         }
+
+        public static double RoundToNearestHalf(double value)
+        {
+            return (double)System.Math.Round(value * 2, MidpointRounding.AwayFromZero) / 2;
+        }
     }
 }

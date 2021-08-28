@@ -46,12 +46,54 @@ namespace FilmPicker.Models
             get => _genres; 
             set { _genres = value; NotifyPropertyChanged(); }
         }
-        private decimal _rating;
+        private double _rating;
 
-        public decimal Rating
+        public double Rating
         {
             get => _rating;
             set { _rating = value; NotifyPropertyChanged(); }
+        }
+
+        private string _releaseData;
+        public string ReleaseDate
+        {
+            get => _releaseData;
+            set { _releaseData = value; NotifyPropertyChanged(); }
+        }
+
+        private string _runtime;
+        public string Runtime
+        {
+            get => _runtime;
+            set { _runtime = value; NotifyPropertyChanged(); }
+        }
+
+        private string _awards;
+        public string Awards
+        {
+            get => _awards;
+            set { _awards = value; NotifyPropertyChanged(); }
+        }
+
+        private string _directors;
+        public string Directors
+        {
+            get => _directors;
+            set { _directors = value; NotifyPropertyChanged(); }
+        }
+
+        private string _writers;
+        public string Writers
+        {
+            get => _writers;
+            set { _writers = value; NotifyPropertyChanged(); }
+        }
+
+        private string _starList;
+        public string Stars
+        {
+            get => _starList;
+            set { _starList = value; NotifyPropertyChanged(); }
         }
         public ObservableCollection<FilmImage> Images { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using FilmPicker.Animations;
 using FilmPicker.Api;
 using FilmPicker.Api.Models;
+using FilmPicker.Math;
 using FilmPicker.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -123,14 +124,24 @@ namespace FilmPicker.ViewModels
                 Title = searchDetails.Title,
                 FullTitle = searchDetails.FullTitle,
                 Genres = searchDetails.Genres,
-                Rating = (decimal) searchDetails.ImDbRating,
+                Rating = (double)searchDetails.ImDbRating / 2,
                 Plot = searchDetails.Plot,
+                Runtime = GetHoursAndMinutesFromTimespan(TimeSpan.FromMinutes(searchDetails.RuntimeMins)),
+                ReleaseDate = searchDetails.ReleaseDate.ToShortDateString(),
+                Awards = searchDetails.Awards,
+                Directors = searchDetails.Directors,
+                Stars = searchDetails.Stars,
+                Writers = searchDetails.Writers,
                 Images = new ObservableCollection<FilmImage>(searchDetails.Images?.Items?.Select(item => new FilmImage
                 {
                     Title = item.Title,
                     Image = item.Image
                 }).ToList())
             };
+        }
+        private string GetHoursAndMinutesFromTimespan(TimeSpan timeSpan)
+        {
+            return string.Format("{0:00}h {1:00}m", timeSpan.TotalHours, timeSpan.TotalMinutes);
         }
         private async void GetFilmsForSearchList()
         {
