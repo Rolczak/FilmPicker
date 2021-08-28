@@ -9,16 +9,17 @@
     mc:Ignorable="d"
     x:Name="dialog"
     Title="Film details" >
-    
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer x:Name="HorizontalScrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True" > 
+        <ScrollViewer x:Name="HorizontalScrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True" >
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -43,7 +44,31 @@
                         <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Plot}" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>
-            </Grid>    
+
+                <ScrollViewer Grid.Column="2" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="400" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True">
+                    <StackPanel>
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Actors:</TextBlock>
+                        <ListView ItemsSource="{x:Bind Film.Actors}">
+                            <DataTemplate x:DataType="model:FilmActor">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Grid.Column="0" Width="50" Height="50">
+                                        <Ellipse.Fill>
+                                            <ImageBrush>
+                                                <ImageBrush.ImageSource>
+                                                    <BitmapImage UriSource="{x:Bind Image}" DecodePixelType="Logical" DecodePixelWidth="50" />
+                                                </ImageBrush.ImageSource>
+                                            </ImageBrush>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                    <TextBlock  Text="{x:Bind Name}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
+                                    <TextBlock> as </TextBlock>
+                                    <TextBlock Text="{x:Bind AsCharacter}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
         </ScrollViewer>
 
         <FlipView ItemsSource="{x:Bind Film.Images}" Grid.Row="1">

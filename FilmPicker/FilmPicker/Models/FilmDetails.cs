@@ -96,5 +96,6 @@ namespace FilmPicker.Models
             set { _starList = value; NotifyPropertyChanged(); }
         }
         public ObservableCollection<FilmImage> Images { get; set; }
+        public ObservableCollection<FilmActor> Actors { get; set; }
     }
 }

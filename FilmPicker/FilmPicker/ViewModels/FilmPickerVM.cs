@@ -136,6 +136,13 @@ namespace FilmPicker.ViewModels
                 {
                     Title = item.Title,
                     Image = item.Image
+                }).ToList()),
+                Actors = new ObservableCollection<FilmActor>(searchDetails.ActorList?.Select(actor => new FilmActor
+                {
+                    Id = actor.Id,
+                    Name = actor.Name,
+                    Image = actor.Image,
+                    AsCharacter = actor.AsCharacter
                 }).ToList())
             };
         }

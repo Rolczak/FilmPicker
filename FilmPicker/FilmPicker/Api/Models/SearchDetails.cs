@@ -21,5 +21,6 @@ namespace FilmPicker.Api.Models
         public string Writers { get; set; }
         public string Stars { get; set; }
         public SearchImages Images { get; set; }
+        public List<SearchActor> ActorList { get; set; }
     }
 }
