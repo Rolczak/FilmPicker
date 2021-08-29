@@ -52,14 +52,7 @@ namespace FilmPicker.Controls
 
             var filmId = (string)(sender as Button).Tag;
 
-            var item = await ViewModel.GetFilmDetails(filmId);
-            if (item == null)
-            {
-                Debug.WriteLine("Item for details not found");
-                return;
-            }
-
-            var contentDialog = new FilmDetailsContentDialog(item)
+            var contentDialog = new FilmDetailsContentDialog(filmId)
             {
                 CloseButtonText = "Close"
             };

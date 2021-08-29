@@ -1,7 +1,7 @@
 ﻿using FilmPicker.Animations;
 using FilmPicker.Api;
 using FilmPicker.Api.Models;
-using FilmPicker.Math;
+using FilmPicker.Helpers;
 using FilmPicker.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -63,8 +63,6 @@ namespace FilmPicker.ViewModels
                 }
             }
         }
-
-        private List<SearchResult> SearchListApi;
         #endregion
 
         public FilmPickerVM()
@@ -130,54 +128,6 @@ namespace FilmPicker.ViewModels
             }
             return randomTitleList.OrderBy(item => random.Next()).ToList();
         }
-        
-        public async Task<FilmDetails> GetFilmDetails(string id)
-        {
-            var searchDetails = await ApiHelper.LoadFilmDetails(id);
-            if (searchDetails == null)
-            {
-                Debug.WriteLine("Error. Downloaded film details are null");
-                return null;
-            }
-
-            return new FilmDetails
-            {
-                Id = searchDetails.Id,
-                Title = searchDetails.Title,
-                FullTitle = searchDetails.FullTitle,
-                Genres = searchDetails.Genres,
-                Rating = (double)searchDetails.ImDbRating / 2,
-                Plot = searchDetails.Plot,
-                Runtime = GetHoursAndMinutesFromTimespan(TimeSpan.FromMinutes(searchDetails.RuntimeMins)),
-                ReleaseDate = searchDetails.ReleaseDate.ToShortDateString(),
-                Awards = searchDetails.Awards,
-                Directors = searchDetails.Directors,
-                Stars = searchDetails.Stars,
-                Writers = searchDetails.Writers,
-                Images = new ObservableCollection<FilmImage>(searchDetails.Images?.Items?.Select(item => new FilmImage
-                {
-                    Title = item.Title,
-                    Image = item.Image
-                }).ToList()),
-                Actors = new ObservableCollection<FilmActor>(searchDetails.ActorList?.Select(actor => new FilmActor
-                {
-                    Id = actor.Id,
-                    Name = actor.Name,
-                    Image = actor.Image,
-                    AsCharacter = actor.AsCharacter
-                }).ToList()),
-                Similars = new ObservableCollection<SimilarFilm>(searchDetails.Similars?.Select(film => new SimilarFilm
-                {
-                    Id = film.Id,
-                    Title = film.Title,
-                    Image = film.Image
-                }))
-            };
-        }
-        private string GetHoursAndMinutesFromTimespan(TimeSpan timeSpan)
-        {
-            return string.Format("{0:00}h {1:00}m", timeSpan.Hours, timeSpan.Minutes);
-        }
         private async void GetFilmsForSearchList()
         {
             IsSearching = true;
@@ -210,7 +160,6 @@ namespace FilmPicker.ViewModels
                 return;
             }
 
-            SearchListApi = result.Results;
             SearchFilmList.Clear();
 
             foreach (var item in result.Results)

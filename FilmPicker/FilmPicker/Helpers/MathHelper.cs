@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FilmPicker.Math
+namespace FilmPicker.Helpers
 {
     public static class MathHelper
     {

@@ -5,18 +5,25 @@
     xmlns:local="using:FilmPicker.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:CommunityToolkit.WinUI.UI.Converters"
     xmlns:model="using:FilmPicker.Models"
     mc:Ignorable="d"
     x:Name="dialog"
     Title="Film details" >
-
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+    <ContentDialog.Resources>
+        <converters:BoolToVisibilityConverter FalseValue="Visible" TrueValue="Collapsed" x:Key="ReverseBollToVisibilityConverter"/>
+    </ContentDialog.Resources>
+    <Grid x:DefaultBindMode="OneWay">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
-        <ScrollViewer x:Name="HorizontalScrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled">
+        <ProgressRing IsActive="{x:Bind ViewModel.IsSearching}" Width="100" Height="100"/>
+        <ScrollViewer x:Name="HorizontalScrollViewer"
+                      Grid.Row="0"
+                      HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" 
+                      VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled"
+                      Visibility="{x:Bind ViewModel.IsSearching, Converter={StaticResource ResourceKey=ReverseBollToVisibilityConverter}}">
             <Grid MaxHeight="400">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -27,35 +34,35 @@
                 <ScrollViewer Grid.Column="0" Padding="10" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="300" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" >
                     <StackPanel>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Title:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.FullTitle}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.FullTitle}" TextWrapping="Wrap" />
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Genres:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Genres}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.Genres}" TextWrapping="Wrap" />
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Release date:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.ReleaseDate}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.ReleaseDate}" TextWrapping="Wrap" />
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Runtime:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Runtime}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.Runtime}" TextWrapping="Wrap" />
                         <TextBlock Margin="0 10 0 0" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">imDb Rating:</TextBlock>
-                        <RatingControl HorizontalAlignment="Left" IsReadOnly="True" Value="{x:Bind Film.Rating}"/>
+                        <RatingControl HorizontalAlignment="Left" IsReadOnly="True" Value="{x:Bind ViewModel.Film.Rating}"/>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Directors:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Directors}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.Directors}" TextWrapping="Wrap" />
                         <TextBlock Margin="0 10 0 0" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Writers:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Writers}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.Writers}" TextWrapping="Wrap" />
                         <TextBlock Margin="0 10 0 0" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Stars:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Stars}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.Stars}" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>
 
                 <ScrollViewer Grid.Column="1" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="400" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" >
                     <StackPanel>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Plot:</TextBlock>
-                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Plot}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Film.Plot}" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>
 
                 <ScrollViewer Grid.Column="2" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Padding="20" >
                     <StackPanel>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Actors:</TextBlock>
-                        <ListView ItemsSource="{x:Bind Film.Actors, Mode=OneWay}">
+                        <ListView ItemsSource="{x:Bind ViewModel.Film.Actors, Mode=OneWay}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Height="60">
@@ -81,7 +88,7 @@
                 <ScrollViewer Grid.Column="3" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Padding="20" >
                     <StackPanel>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Similar films:</TextBlock>
-                        <ListView ItemsSource="{x:Bind Film.Similars, Mode=OneWay}">
+                        <ListView ItemsSource="{x:Bind ViewModel.Film.Similars, Mode=OneWay}">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="model:SimilarFilm">
                                     <StackPanel Orientation="Horizontal" Height="60">
@@ -104,7 +111,7 @@
             </Grid>
         </ScrollViewer>
 
-        <FlipView ItemsSource="{x:Bind Film.Images}" Grid.Row="1">
+        <FlipView ItemsSource="{x:Bind ViewModel.Film.Images}" Grid.Row="1">
             <FlipView.ItemTemplate>
                 <DataTemplate x:DataType="model:FilmImage">
                     <Grid>
