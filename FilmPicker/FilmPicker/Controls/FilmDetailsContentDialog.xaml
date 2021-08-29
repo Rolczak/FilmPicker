@@ -108,7 +108,7 @@
             <FlipView.ItemTemplate>
                 <DataTemplate x:DataType="model:FilmImage">
                     <Grid>
-                        <Image Source="{x:Bind Image}" Stretch="Uniform" VerticalAlignment="Top" UseLayoutRounding="True" Ima/>
+                        <Image Source="{x:Bind Image}" Stretch="Uniform" VerticalAlignment="Top" UseLayoutRounding="True" />
                         <Border Background="#80000000" VerticalAlignment="Bottom">
                             <TextBlock Text="{x:Bind Title}" Style="{ThemeResource BodyTextBlockStyle}" 
                                            Foreground="White" Padding="10, 10" TextWrapping="Wrap" 
