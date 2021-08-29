@@ -27,6 +27,7 @@ namespace FilmPicker.ViewModels
         public ICommand SelectRandomCommand { get; private set; }
         public ICommand GetSearchList { get; private set; }
         public ICommand AddCustomFilmToList { get; private set; }
+        public ICommand AddFilmToList { get; private set; }
         #endregion
 
         #region Fields
@@ -86,6 +87,27 @@ namespace FilmPicker.ViewModels
                     Title = "Enter title",
                     Multiplier = 1,
                 }));
+
+            AddFilmToList = new DelegateCommand<string>(id => 
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    Debug.WriteLine("Cannot add film to list id is null");
+                    return;
+                }
+                var film = SearchFilmList.FirstOrDefault(f => f.Id == id);
+                if(film == null)
+                {
+                    Debug.WriteLine("Not found film in list");
+                    return;
+                }
+                Films.Add(new FilmModel
+                {
+                    Id = film.Id,
+                    Title = film.Title,
+                    Multiplier = 1
+                });
+            });
         }
 
         public List<string> GetRandomList()

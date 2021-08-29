@@ -93,5 +93,16 @@ namespace FilmPicker
             var tag = (sender as Button).Tag;
             ViewModel.DeleteFilmCommand.Execute(tag);
         }
+
+        private void AddFilmToList(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button)
+            {
+                Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
+                return;
+            }
+            var tag = (sender as Button).Tag;
+            ViewModel.AddFilmToList.Execute(tag);
+        }
     }
 }

@@ -21,11 +21,11 @@
             <RowDefinition Height="15*" MinHeight="300" />
         </Grid.RowDefinitions>
         <Grid.Resources>
-            <DataTemplate x:Key="NumberTemplate">
-                <NumberBox Value="{Binding Multiplier, Mode=TwoWay}" Minimum="1" Maximum="10" SpinButtonPlacementMode="Inline" Margin="1"/>
+            <DataTemplate x:Key="NumberTemplate" x:DataType="Model:FilmModel">
+                <NumberBox Value="{x:Bind Multiplier, Mode=TwoWay}" Minimum="1" Maximum="10" SpinButtonPlacementMode="Inline" Margin="1"/>
             </DataTemplate>
-            <DataTemplate x:Key="DeleteButton">
-                <Button Click="DeleteButtonClick" Tag="{Binding Id}" HorizontalAlignment="Stretch" Background="DarkRed" CornerRadius="0" Margin="5 0 0 0">
+            <DataTemplate x:Key="DeleteButton" x:DataType="Model:FilmModel">
+                <Button Click="DeleteButtonClick" Tag="{x:Bind Id}" HorizontalAlignment="Stretch" Background="DarkRed" CornerRadius="0" Margin="5 0 0 0">
                     <SymbolIcon Symbol="Delete" />
                 </Button>
             </DataTemplate>
@@ -89,17 +89,17 @@
                                     <Ellipse.Fill>
                                         <ImageBrush Stretch="UniformToFill">
                                             <ImageBrush.ImageSource>
-                                                <BitmapImage UriSource="{Binding ImageUrl}" DecodePixelType="Logical" DecodePixelWidth="50" />
+                                                <BitmapImage UriSource="{x:Bind ImageUrl}" DecodePixelType="Logical" DecodePixelWidth="50" />
                                             </ImageBrush.ImageSource>
                                         </ImageBrush>
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                <TextBlock Grid.Column="1" Text="{Binding Title}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" >
-                                    <Button Margin="20 0 0 0" Click="GetSearchItemDetails" Tag="{Binding Id}" >
+                                    <Button Margin="20 0 0 0" Click="GetSearchItemDetails" Tag="{x:Bind Id}" >
                                         <SymbolIcon Symbol="Help" />
                                     </Button>
-                                    <Button Margin="20 0 0 0">
+                                    <Button Margin="20 0 0 0" Click="AddFilmToList" Tag="{x:Bind Id}">
                                         <SymbolIcon Symbol="Add" />
                                     </Button>
                                 </StackPanel>
