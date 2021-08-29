@@ -143,12 +143,18 @@ namespace FilmPicker.ViewModels
                     Name = actor.Name,
                     Image = actor.Image,
                     AsCharacter = actor.AsCharacter
-                }).ToList())
+                }).ToList()),
+                Similars = new ObservableCollection<SimilarFilm>(searchDetails.Similars?.Select(film => new SimilarFilm
+                {
+                    Id = film.Id,
+                    Title = film.Title,
+                    Image = film.Image
+                }))
             };
         }
         private string GetHoursAndMinutesFromTimespan(TimeSpan timeSpan)
         {
-            return string.Format("{0:00}h {1:00}m", timeSpan.TotalHours, timeSpan.TotalMinutes);
+            return string.Format("{0:00}h {1:00}m", timeSpan.Hours, timeSpan.Minutes);
         }
         private async void GetFilmsForSearchList()
         {

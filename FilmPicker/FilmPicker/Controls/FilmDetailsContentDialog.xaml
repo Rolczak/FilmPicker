@@ -16,17 +16,24 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer x:Name="HorizontalScrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True" >
-            <Grid>
+        <ScrollViewer x:Name="HorizontalScrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled">
+            <Grid MaxHeight="400">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ScrollViewer Grid.Column="0" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="300" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True">
+                <ScrollViewer Grid.Column="0" Padding="10" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="300" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" >
                     <StackPanel>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Title:</TextBlock>
                         <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.FullTitle}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Genres:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Genres}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Release date:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.ReleaseDate}" TextWrapping="Wrap" />
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Runtime:</TextBlock>
+                        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Runtime}" TextWrapping="Wrap" />
                         <TextBlock Margin="0 10 0 0" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">imDb Rating:</TextBlock>
                         <RatingControl HorizontalAlignment="Left" IsReadOnly="True" Value="{x:Bind Film.Rating}"/>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Directors:</TextBlock>
@@ -38,33 +45,59 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <ScrollViewer Grid.Column="1" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="400" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True">
+                <ScrollViewer Grid.Column="1" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="400" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" >
                     <StackPanel>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Plot:</TextBlock>
                         <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind Film.Plot}" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>
 
-                <ScrollViewer Grid.Column="2" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" MaxWidth="400" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Margin="10" IsHorizontalScrollChainingEnabled="True" IsVerticalScrollChainingEnabled="True">
+                <ScrollViewer Grid.Column="2" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Padding="20" >
                     <StackPanel>
                         <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Actors:</TextBlock>
-                        <ListView ItemsSource="{x:Bind Film.Actors}">
-                            <DataTemplate x:DataType="model:FilmActor">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Grid.Column="0" Width="50" Height="50">
-                                        <Ellipse.Fill>
-                                            <ImageBrush>
-                                                <ImageBrush.ImageSource>
-                                                    <BitmapImage UriSource="{x:Bind Image}" DecodePixelType="Logical" DecodePixelWidth="50" />
-                                                </ImageBrush.ImageSource>
-                                            </ImageBrush>
-                                        </Ellipse.Fill>
-                                    </Ellipse>
-                                    <TextBlock  Text="{x:Bind Name}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
-                                    <TextBlock> as </TextBlock>
-                                    <TextBlock Text="{x:Bind AsCharacter}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </DataTemplate>
+                        <ListView ItemsSource="{x:Bind Film.Actors, Mode=OneWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Height="60">
+                                        <Ellipse Width="50" Height="50" Margin="0 0 10 0">
+                                            <Ellipse.Fill>
+                                                <ImageBrush Stretch="UniformToFill">
+                                                    <ImageBrush.ImageSource>
+                                                        <BitmapImage UriSource="{Binding Image}" DecodePixelType="Logical" DecodePixelWidth="50" />
+                                                    </ImageBrush.ImageSource>
+                                                </ImageBrush>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                        <TextBlock Text="{Binding Name}" Style="{ThemeResource BaseTextBlockStyle}" VerticalAlignment="Center"/>
+                                        <TextBlock VerticalAlignment="Center">&#160;as&#160;</TextBlock>
+                                        <TextBlock Text="{Binding AsCharacter}" Style="{ThemeResource BaseTextBlockStyle}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer Grid.Column="3" MaxHeight="{Binding ElementName=HorizontalScrollViewer, Path=ActualHeight}" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Padding="20" >
+                    <StackPanel>
+                        <TextBlock Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}">Similar films:</TextBlock>
+                        <ListView ItemsSource="{x:Bind Film.Similars, Mode=OneWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="model:SimilarFilm">
+                                    <StackPanel Orientation="Horizontal" Height="60">
+                                        <Ellipse Width="50" Height="50" Margin="0 0 10 0">
+                                            <Ellipse.Fill>
+                                                <ImageBrush Stretch="UniformToFill">
+                                                    <ImageBrush.ImageSource>
+                                                        <BitmapImage UriSource="{x:Bind Image}" DecodePixelType="Logical" DecodePixelWidth="50"/>
+                                                    </ImageBrush.ImageSource>
+                                                </ImageBrush>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                        <TextBlock Text="{x:Bind Title}" Style="{ThemeResource BaseTextBlockStyle}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
                         </ListView>
                     </StackPanel>
                 </ScrollViewer>
@@ -75,13 +108,11 @@
             <FlipView.ItemTemplate>
                 <DataTemplate x:DataType="model:FilmImage">
                     <Grid>
-                        <Image Source="{x:Bind Image}" Stretch="Uniform" VerticalAlignment="Top" UseLayoutRounding="True"/>
-                        <Border Background="#AAFFFFFF" VerticalAlignment="Bottom">
-                            <ScrollViewer MaxHeight="100">
-                                <TextBlock Text="{x:Bind Title}" Style="{ThemeResource BaseTextBlockStyle}" 
-                                           Foreground="#FF000000" Padding="12,12" TextWrapping="Wrap" 
+                        <Image Source="{x:Bind Image}" Stretch="Uniform" VerticalAlignment="Top" UseLayoutRounding="True" Ima/>
+                        <Border Background="#80000000" VerticalAlignment="Bottom">
+                            <TextBlock Text="{x:Bind Title}" Style="{ThemeResource BodyTextBlockStyle}" 
+                                           Foreground="White" Padding="10, 10" TextWrapping="Wrap" 
                                            HorizontalAlignment="Center" TextAlignment="Center"/>
-                            </ScrollViewer>
                         </Border>
                     </Grid>
                 </DataTemplate>
