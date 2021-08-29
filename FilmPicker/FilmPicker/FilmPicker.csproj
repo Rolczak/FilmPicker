@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Controls\FilmDetailsContentDialog.xaml" />
+    <None Remove="Controls\FilmPickerControl.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,12 @@
 
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\FilmPickerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

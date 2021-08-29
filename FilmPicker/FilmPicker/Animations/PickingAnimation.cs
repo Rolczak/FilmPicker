@@ -37,15 +37,18 @@ namespace FilmPicker.Animations
             await ChangeTextAnimation(randomTitleList.Last(), toDurationMs, winnerGrid, true);
         }
         private async Task<TextBlock> ChangeTextAnimation(string text, int waitTime, Panel winnerGrid, bool last = false)
-        {    
+        {
+            var panelHeight = winnerGrid.ActualHeight;
+
+
             CircleEase easing = new();
             easing.EasingMode = EasingMode.EaseInOut;
 
             DoubleAnimation movingAnimation = new();
             movingAnimation.EasingFunction = easing;
             movingAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(waitTime));
-            movingAnimation.From = -100;
-            movingAnimation.To = last ? 0 : 100;
+            movingAnimation.From = 0;
+            movingAnimation.To = last ? panelHeight / 2 : panelHeight;
 
             DoubleAnimation opacityAnimation = new();
             opacityAnimation.EasingFunction = easing;

@@ -38,71 +38,13 @@ namespace FilmPicker
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        #region AnimationConfig
-        private readonly int fromDurationMs = 50;
-        private readonly int toDurationMs = 500;
-        #endregion
 
-        public FilmPickerVM ViewModel { get; set; }
         public MainWindow()
         {
-            ViewModel = new();
+
             this.InitializeComponent();
         }
 
-        private async void PickRandomFilm_click(object sender, RoutedEventArgs e)
-        {
-            winnerGrid.Children.Clear();
 
-            PickingAnimation pickingAnimation = new PickingAnimation(ViewModel.GetRandomList(), fromDurationMs, toDurationMs);
-            await pickingAnimation.Animate(winnerGrid);
-        }
-        private async void GetSearchItemDetails(object sender, RoutedEventArgs e)
-        {
-            if (sender is not Button)
-            {
-                Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
-                return;
-            }
-
-            var filmId = (string)(sender as Button).Tag;
-
-            var item = await ViewModel.GetFilmDetails(filmId);
-            if (item == null)
-            {
-                Debug.WriteLine("Item for details not found");
-                return;
-            }
-
-            var contentDialog = new FilmDetailsContentDialog(item)
-            {
-                CloseButtonText = "Close"
-            };
-            contentDialog.XamlRoot = Content.XamlRoot;
-            await contentDialog.ShowAsync();
-
-        }
-
-        private void DeleteButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (sender is not Button)
-            {
-                Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
-                return;
-            }
-            var tag = (sender as Button).Tag;
-            ViewModel.DeleteFilmCommand.Execute(tag);
-        }
-
-        private void AddFilmToList(object sender, RoutedEventArgs e)
-        {
-            if (sender is not Button)
-            {
-                Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
-                return;
-            }
-            var tag = (sender as Button).Tag;
-            ViewModel.AddFilmToList.Execute(tag);
-        }
     }
 }
