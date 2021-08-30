@@ -43,6 +43,7 @@ namespace FilmPicker.ViewModels
 
         public async Task GetFilmDetails()
         {
+            Debug.WriteLine("Getting film details");
             IsSearching = true;
             var searchDetails = await ApiHelper.LoadFilmDetails(filmId);
             if (searchDetails == null)

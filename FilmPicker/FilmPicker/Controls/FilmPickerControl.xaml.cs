@@ -1,4 +1,7 @@
 ﻿using FilmPicker.Animations;
+using FilmPicker.Helpers;
+using FilmPicker.Models;
+using FilmPicker.Services;
 using FilmPicker.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -47,6 +50,12 @@ namespace FilmPicker.Controls
             if (sender is not Button)
             {
                 Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = "Sender is not a button."
+                });
                 return;
             }
 
@@ -58,7 +67,6 @@ namespace FilmPicker.Controls
             };
             contentDialog.XamlRoot = Content.XamlRoot;
             await contentDialog.ShowAsync();
-
         }
 
         private void DeleteButtonClick(object sender, RoutedEventArgs e)
@@ -66,6 +74,12 @@ namespace FilmPicker.Controls
             if (sender is not Button)
             {
                 Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = "Sender is not a button."
+                });
                 return;
             }
             var tag = (sender as Button).Tag;
@@ -77,6 +91,12 @@ namespace FilmPicker.Controls
             if (sender is not Button)
             {
                 Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = "Sender is not a button."
+                });
                 return;
             }
             var tag = (sender as Button).Tag;

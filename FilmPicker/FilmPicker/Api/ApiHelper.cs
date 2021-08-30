@@ -1,4 +1,7 @@
 ﻿using FilmPicker.Api.Models;
+using FilmPicker.Helpers;
+using FilmPicker.Models;
+using FilmPicker.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Newtonsoft.Json;
 using System;
@@ -24,20 +27,24 @@ namespace FilmPicker.Api
 
         public static async Task<SearchData> GetListForSearch(string expression)
         {
+            Debug.WriteLine("Getting list for search list from API");
             try
             {
                 var response = await httpClient.GetAsync(SearchMovieUrl + expression);
-                if (!response.IsSuccessStatusCode)
-                {
-                    return null;
-                }
+                response.EnsureSuccessStatusCode();
 
                 var jsonContent = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<SearchData>(jsonContent);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error when downloading data. Exception message: {ex.Message}");
+                Debug.WriteLine($"Unexpected error when downloading data for search list. Exception message: {ex.Message}");
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = "Unexpected error when downloading data for seach list."
+                });
                 return null;
             }
 
@@ -45,11 +52,18 @@ namespace FilmPicker.Api
 
         public static async Task<SearchDetails> LoadFilmDetails(string Id)
         {
+            Debug.WriteLine("Getting film details from API");
             try
             {
                 if (string.IsNullOrWhiteSpace(Id))
                 {
                     Debug.WriteLine("Error while downloading film details. Film id is null");
+                    ToastService.AddToast.Execute(new ToastModel
+                    {
+                        Id = StringHelper.GenerateRandomId(),
+                        Title = "Error",
+                        Message = "Id cannot be null."
+                    });
                     return null;
                 }
                 var response = await httpClient.GetAsync($"{MovieDetailsUrl}{Id}/images,");
@@ -61,6 +75,12 @@ namespace FilmPicker.Api
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected error when downloading film details. Exception message: {ex.Message}");
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = "Unexpected error when downloading data for film details."
+                });
                 return null;
             }
         }

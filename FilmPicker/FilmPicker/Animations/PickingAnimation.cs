@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,8 @@ namespace FilmPicker.Animations
 
         public async Task Animate(Panel winnerGrid)
         {
+            Debug.WriteLine("Starting picking animation");
+
             float percentage = 0f;
             for (int i = 0; i < randomTitleList.Count - 1; i++)
             {
@@ -35,11 +38,12 @@ namespace FilmPicker.Animations
                 winnerGrid.Children.Remove(element);
             }
             await ChangeTextAnimation(randomTitleList.Last(), toDurationMs, winnerGrid, true);
+
+            Debug.WriteLine("Picking animation finished");
         }
         private async Task<TextBlock> ChangeTextAnimation(string text, int waitTime, Panel winnerGrid, bool last = false)
         {
             var panelHeight = winnerGrid.ActualHeight;
-
 
             CircleEase easing = new();
             easing.EasingMode = EasingMode.EaseInOut;

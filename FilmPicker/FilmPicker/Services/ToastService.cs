@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace FilmPicker.Services
 
         public static void Initialize()
         {
+            Debug.WriteLine("Initializing toast service");
             ToastsNotificationList = new();
             RemoveToast = new DelegateCommand<string>(id =>
             {
@@ -32,6 +34,7 @@ namespace FilmPicker.Services
         }
         private static void Delay<T>(int milliseconds, Action<T> action, T obj)
         {
+            Debug.WriteLine($"Stating delayed task. Task will execute in {milliseconds/100}s");
             var t = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(milliseconds) };
             t.Tick += (o, e) => { t.Stop(); action.Invoke(obj); };
             t.Start();
