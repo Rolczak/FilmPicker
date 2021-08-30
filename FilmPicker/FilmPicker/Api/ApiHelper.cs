@@ -43,26 +43,6 @@ namespace FilmPicker.Api
 
         }
 
-        public static async Task<BitmapImage> LoadImage(Uri url)
-        {
-            try
-            {
-                var client = new HttpClient();
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                var inputStream = await response.Content.ReadAsStreamAsync();
-                BitmapImage image = new();
-                await image.SetSourceAsync(inputStream.AsRandomAccessStream());
-                return image;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Unexpected error when downloading image. Exception message: {ex.Message}");
-                return null;
-            }
-        }
-
         public static async Task<SearchDetails> LoadFilmDetails(string Id)
         {
             try
