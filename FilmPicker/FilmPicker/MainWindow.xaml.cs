@@ -3,6 +3,7 @@ using FilmPicker.Api;
 using FilmPicker.Api.Models;
 using FilmPicker.Controls;
 using FilmPicker.Models;
+using FilmPicker.Services;
 using FilmPicker.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -16,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -25,6 +27,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -38,13 +41,11 @@ namespace FilmPicker
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-
         public MainWindow()
         {
-
+            ToastService.Initialize();
             this.InitializeComponent();
         }
-
 
     }
 }

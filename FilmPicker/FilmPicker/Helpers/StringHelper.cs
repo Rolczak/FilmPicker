@@ -12,5 +12,14 @@ namespace FilmPicker.Helpers
         {
             return string.Format("{0:00}h {1:00}m", timeSpan.Hours, timeSpan.Minutes);
         }
+        public static string GenerateRandomId()
+        {
+            var guid = Guid.NewGuid();
+            return Convert.ToBase64String(
+                guid.ToByteArray())
+                .Replace("=", "")
+                .Replace("=", "")
+                .Remove(5);
+        }
     }
 }

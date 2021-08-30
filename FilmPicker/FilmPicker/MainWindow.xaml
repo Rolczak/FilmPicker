@@ -6,8 +6,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:FilmPicker.Controls"
+    xmlns:services="using:FilmPicker.Services"
+    xmlns:models="using:FilmPicker.Models"
     mc:Ignorable="d">
+    <Grid x:Name="mainGrid">
+        <ItemsControl ItemsSource="{x:Bind services:ToastService.ToastsNotificationList}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:ToastModel">
+                    <TeachingTip Title="{x:Bind Title}" 
+                                     Subtitle="{x:Bind Message}" 
+                                     IsOpen="True" 
+                                     CloseButtonCommand="{x:Bind services:ToastService.RemoveToast}" 
+                                     CloseButtonCommandParameter="{x:Bind Id}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-    <controls:FilmPickerControl />
-    
+        <controls:FilmPickerControl />
+    </Grid>
+
 </Window>

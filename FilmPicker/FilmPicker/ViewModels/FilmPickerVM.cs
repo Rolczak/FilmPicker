@@ -3,6 +3,7 @@ using FilmPicker.Api;
 using FilmPicker.Api.Models;
 using FilmPicker.Helpers;
 using FilmPicker.Models;
+using FilmPicker.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -22,6 +23,7 @@ namespace FilmPicker.ViewModels
         private readonly int minItems = 30;
         private readonly int maxItems = 60;
         #endregion
+
         #region Commands
         public ICommand DeleteFilmCommand { get; private set; }
         public ICommand SelectRandomCommand { get; private set; }
@@ -67,26 +69,33 @@ namespace FilmPicker.ViewModels
 
         public FilmPickerVM()
         {
+            InitializeProperties();
+            CreateCommands();
+        }
+        private void InitializeProperties()
+        {
             Films = new();
             SearchFilmList = new();
             IsSearching = false;
-
+        }
+        private void CreateCommands()
+        {
             DeleteFilmCommand = new DelegateCommand<string>(x =>
-                {
-                    Films.Remove(Films.FirstOrDefault(f => f.Id == x));
-                });
+            {
+                Films.Remove(Films.FirstOrDefault(f => f.Id == x));
+            });
 
             GetSearchList = new DelegateCommand(() => GetFilmsForSearchList());
 
             AddCustomFilmToList = new DelegateCommand(() => Films
                 .Add(new FilmModel
                 {
-                    Id = GenerateRandomId(),
+                    Id = StringHelper.GenerateRandomId(),
                     Title = "Enter title",
                     Multiplier = 1,
                 }));
 
-            AddFilmToList = new DelegateCommand<string>(id => 
+            AddFilmToList = new DelegateCommand<string>(id =>
             {
                 if (string.IsNullOrEmpty(id))
                 {
@@ -94,7 +103,7 @@ namespace FilmPicker.ViewModels
                     return;
                 }
                 var film = SearchFilmList.FirstOrDefault(f => f.Id == id);
-                if(film == null)
+                if (film == null)
                 {
                     Debug.WriteLine("Not found film in list");
                     return;
@@ -107,7 +116,6 @@ namespace FilmPicker.ViewModels
                 });
             });
         }
-
         public List<string> GetRandomList()
         {
             var random = new Random();
@@ -128,6 +136,7 @@ namespace FilmPicker.ViewModels
             }
             return randomTitleList.OrderBy(item => random.Next()).ToList();
         }
+
         private async void GetFilmsForSearchList()
         {
             IsSearching = true;
@@ -135,15 +144,12 @@ namespace FilmPicker.ViewModels
             if (result is null)
             {
                 Debug.WriteLine("Result from api helper is null");
-                //var toolTip = new TeachingTip
-                //{
-                //    Title = "Error",
-                //    Subtitle = "Unexpected error when downloading data",
-                //    CloseButtonCommand = RemoveToolTip
-                //};
-                //toolTip.CloseButtonCommandParameter = toolTip;
-                //mainGrid.Children.Add(toolTip);
-                //toolTip.IsOpen = true;
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = "Unexpected error when downloading data"
+                });
 
                 return;
             }
@@ -151,12 +157,13 @@ namespace FilmPicker.ViewModels
             if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
             {
                 Debug.WriteLine(result.ErrorMessage);
-                //var toolTip = new TeachingTip
-                //{
-                //    Title = "Error",
-                //    Subtitle = result.ErrorMessage
-                //};
-                //toolTip.IsOpen = true;
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = result.ErrorMessage
+                });
+
                 return;
             }
 
@@ -172,16 +179,6 @@ namespace FilmPicker.ViewModels
                 });
             }
             IsSearching = false;
-        }
-
-        private string GenerateRandomId()
-        {
-            var guid = Guid.NewGuid();
-            return Convert.ToBase64String(
-                guid.ToByteArray())
-                .Replace("=", "")
-                .Replace("=", "")
-                .Remove(5);
         }
     }
 }
