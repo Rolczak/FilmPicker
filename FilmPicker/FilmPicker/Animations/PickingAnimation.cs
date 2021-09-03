@@ -45,28 +45,37 @@ namespace FilmPicker.Animations
         {
             var panelHeight = winnerGrid.ActualHeight;
 
-            CircleEase easing = new();
-            easing.EasingMode = EasingMode.EaseInOut;
+            CircleEase easing = new()
+            {
+                EasingMode = EasingMode.EaseInOut
+            };
 
-            DoubleAnimation movingAnimation = new();
-            movingAnimation.EasingFunction = easing;
-            movingAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(waitTime));
-            movingAnimation.From = 0;
-            movingAnimation.To = last ? panelHeight / 2 : panelHeight;
-
-            DoubleAnimation opacityAnimation = new();
-            opacityAnimation.EasingFunction = easing;
-            opacityAnimation.From = 0;
-            opacityAnimation.To = 1;
-            opacityAnimation.AutoReverse = !last;
-            opacityAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(waitTime / 2));
-
-            var randomTextBlock = new TextBlock();
-            randomTextBlock.Text = text;
-            randomTextBlock.Style = Application.Current.Resources["HeaderTextBlockStyle"] as Style;
-            randomTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-            randomTextBlock.RenderTransform = new TranslateTransform();
+            TextBlock randomTextBlock = new()
+            {
+                Text = text,
+                Style = Application.Current.Resources["HeaderTextBlockStyle"] as Style,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                RenderTransform = new TranslateTransform(),
+            };
             winnerGrid.Children.Add(randomTextBlock);
+
+            DoubleAnimation movingAnimation = new()
+            {
+                EasingFunction = easing,
+                Duration = new Duration(TimeSpan.FromMilliseconds(waitTime)),
+                From = -panelHeight / 2,
+                To = last ? 0 : (panelHeight - randomTextBlock.FontSize) / 2
+            };
+
+            DoubleAnimation opacityAnimation = new()
+            {
+                EasingFunction = easing,
+                From = 0,
+                To = 1,
+                AutoReverse = !last,
+                Duration = new Duration(TimeSpan.FromMilliseconds(waitTime / 2))
+            };
 
             Storyboard.SetTarget(movingAnimation, randomTextBlock.RenderTransform);
             Storyboard.SetTargetProperty(movingAnimation, "Y");

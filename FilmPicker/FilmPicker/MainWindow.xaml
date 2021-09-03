@@ -21,7 +21,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
         <controls:FilmPickerControl />
     </Grid>
 

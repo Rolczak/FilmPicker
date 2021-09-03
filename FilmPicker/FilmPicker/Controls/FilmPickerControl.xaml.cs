@@ -44,6 +44,17 @@ namespace FilmPicker.Controls
 
             PickingAnimation pickingAnimation = new PickingAnimation(ViewModel.GetRandomList(), fromDurationMs, toDurationMs);
             await pickingAnimation.Animate(winnerGrid);
+
+            var redoButton = new Button
+            {
+                Content = new SymbolIcon(Symbol.Refresh),
+                Margin = new Thickness(0, 0, 0, 10),
+                VerticalAlignment = VerticalAlignment.Bottom,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            redoButton.Click += PickRandomFilm_click;
+
+            winnerGrid.Children.Add(redoButton);
         }
         private async void GetSearchItemDetails(object sender, RoutedEventArgs e)
         {
