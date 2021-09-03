@@ -139,6 +139,18 @@ namespace FilmPicker.ViewModels
 
         private async void GetFilmsForSearchList()
         {
+            if (string.IsNullOrWhiteSpace(SearchExpression))
+            {
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Information",
+                    Message = "Search expression cannot be empty"
+                });
+
+                return;
+            }
+
             IsSearching = true;
             var result = await ApiHelper.GetListForSearch(SearchExpression);
             if (result is null)
