@@ -6,14 +6,17 @@ using FilmPicker.Models;
 using FilmPicker.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.Storage;
 
 namespace FilmPicker.ViewModels
 {
@@ -30,11 +33,26 @@ namespace FilmPicker.ViewModels
         public ICommand GetSearchList { get; private set; }
         public ICommand AddCustomFilmToList { get; private set; }
         public ICommand AddFilmToList { get; private set; }
+        public ICommand AddFilmFromHistory { get; private set; }
         #endregion
 
         #region Fields
         public ObservableCollection<FilmModel> Films { get; set; }
         public ObservableCollection<SearchFilmModel> SearchFilmList { get; set; }
+
+        private PickHistory _lastPick;
+        public PickHistory LastPick
+        {
+            get => _lastPick;
+            set
+            {
+                if (_lastPick != value)
+                {
+                    _lastPick = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        } 
 
         private string _searchExpression;
 
@@ -77,7 +95,9 @@ namespace FilmPicker.ViewModels
             Films = new();
             SearchFilmList = new();
             IsSearching = false;
+            Task.Run(() => TryLoadLastPickAsync());
         }
+
         private void CreateCommands()
         {
             DeleteFilmCommand = new DelegateCommand<string>(x =>
@@ -114,6 +134,23 @@ namespace FilmPicker.ViewModels
                     Title = film.Title,
                     Multiplier = 1
                 });
+            });
+
+            AddFilmFromHistory = new DelegateCommand<string>(id =>
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    Debug.WriteLine("Cannot add film to list id is null");
+                    return;
+                }
+                var film = LastPick.Films.FirstOrDefault(f => f.Id == id);
+                if (film == null)
+                {
+                    Debug.WriteLine("Not found film in list");
+                    return;
+                }
+                film.Multiplier++;
+                Films.Add(film);
             });
         }
         public List<string> GetRandomList()
@@ -191,6 +228,34 @@ namespace FilmPicker.ViewModels
                 });
             }
             IsSearching = false;
+        }
+
+        private string filePath => Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "PickHistory.json");
+        public async Task SaveHistoryToFile(string winner)
+        {
+            Debug.WriteLine("Saving last pick to file");
+            LastPick = new PickHistory
+            {
+                Films = Films.ToList(),
+                WinnerTitle = winner,
+                PickDate = DateTime.Now
+            };
+
+            var serializedData = JsonConvert.SerializeObject(LastPick);
+            await File.WriteAllTextAsync(filePath, serializedData);
+        }
+
+        private async Task TryLoadLastPickAsync()
+        {
+            Debug.WriteLine("Trying to get last pick information");
+            var data = await File.ReadAllTextAsync(filePath);
+            if (data is null)
+            {
+                Debug.WriteLine("File not found or file is empty");
+                return;
+            }
+
+            LastPick = JsonConvert.DeserializeObject<PickHistory>(data);
         }
     }
 }

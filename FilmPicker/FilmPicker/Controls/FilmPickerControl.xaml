@@ -26,21 +26,75 @@
     <Grid x:Name="mainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="200" />
-            <ColumnDefinition Width="*" MinWidth="200" />
+            <ColumnDefinition Width="2*" MinWidth="200" />
+            <ColumnDefinition Width="2*" MinWidth="200" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="10*" MinHeight="100" />
             <RowDefinition Height="15*" MinHeight="300" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="winnerGrid" Grid.ColumnSpan="2" Grid.Row="0" Background="{ThemeResource SystemAccentColorDark3}">
+        <Grid x:Name="winnerGrid" Grid.ColumnSpan="3" Grid.Row="0" Background="{ThemeResource SystemAccentColorDark3}">
             <TextBlock Style="{ThemeResource HeaderTextBlockStyle}" HorizontalAlignment="Center" VerticalAlignment="Center">Film Picker</TextBlock>
             <Button Click="PickRandomFilm_click" HorizontalAlignment="Center" 
                     VerticalAlignment="Bottom" Width="250" Margin="0 0 0 10"
                     IsEnabled="{x:Bind ViewModel.Films.Count, Converter={StaticResource ResourceKey=CountToEnabledConverterKey}, Mode=OneWay}">Select random</Button>
         </Grid>
+        
         <Grid Grid.Row="1"
               Grid.Column="0"
+              Padding="10"
+              BorderThickness="0 1 1 0"
+              BorderBrush="{ThemeResource SystemChromeMediumHighColor}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="60" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Last Pick" Style="{ThemeResource HeaderTextBlockStyle}" />
+            <StackPanel  Grid.Row="1">
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 10" >
+                    <TextBlock Text="Picking date:" Margin="0 0 5 0"/>
+                    <TextBlock Text="{x:Bind ViewModel.LastPick.PickDate}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 10" >
+                    <TextBlock Text="Winner:" Margin="0 0 5 0"/>
+                    <TextBlock Text="{x:Bind ViewModel.LastPick.WinnerTitle}" />
+                </StackPanel>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <ListView ItemsSource="{x:Bind ViewModel.LastPick.Films, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="Model:FilmModel">
+                            <Grid Height="60">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind Multiplier}" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" >
+                                    <Button Margin="20 0 0 0" Click="AddFilmFromHistory" Tag="{x:Bind Id}">
+                                        <SymbolIcon Symbol="Add" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </ScrollViewer>
+            
+        </Grid>
+        
+        <Grid Grid.Row="1"
+              Grid.Column="1"
               Padding="10"
               BorderThickness="0 1 0 0"
               BorderBrush="{ThemeResource SystemChromeMediumHighColor}">
@@ -58,7 +112,7 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
-            
+
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                 <controls:DataGrid
                         ItemsSource="{x:Bind ViewModel.Films, Mode=OneWay}"
@@ -74,7 +128,7 @@
         </Grid>
         
         <Grid Grid.Row="1"
-              Grid.Column="1"
+              Grid.Column="2"
               Padding="10"
               BorderThickness="1 1 0 0"
               BorderBrush="{ThemeResource SystemChromeMediumHighColor}">

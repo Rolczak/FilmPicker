@@ -42,8 +42,12 @@ namespace FilmPicker.Controls
         {
             winnerGrid.Children.Clear();
 
-            PickingAnimation pickingAnimation = new PickingAnimation(ViewModel.GetRandomList(), fromDurationMs, toDurationMs);
+            var randomFilmList = ViewModel.GetRandomList();
+
+            PickingAnimation pickingAnimation = new PickingAnimation(randomFilmList, fromDurationMs, toDurationMs);
             await pickingAnimation.Animate(winnerGrid);
+
+            await ViewModel.SaveHistoryToFile(randomFilmList.Last());
 
             var redoButton = new Button
             {
@@ -112,6 +116,23 @@ namespace FilmPicker.Controls
             }
             var tag = (sender as Button).Tag;
             ViewModel.AddFilmToList.Execute(tag);
+        }
+
+        private void AddFilmFromHistory(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button)
+            {
+                Debug.WriteLine($"Sender is not a button. Get {sender.GetType().Name} instead");
+                ToastService.AddToast.Execute(new ToastModel
+                {
+                    Id = StringHelper.GenerateRandomId(),
+                    Title = "Error",
+                    Message = "Sender is not a button."
+                });
+                return;
+            }
+            var tag = (sender as Button).Tag;
+            ViewModel.AddFilmFromHistory.Execute(tag);
         }
     }
 }
